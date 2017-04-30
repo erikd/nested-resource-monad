@@ -6,7 +6,8 @@
   cabal-1.24 build && \
   dist/build/test/test && \
   cabal-1.24 haddock && \
-  cabal-1.24 sdist)
+  cabal-1.24 sdist && \
+  cabal-1.24 install)
 
 (cd nested-resource-linux && \
   cabal-1.24 install --only-dependencies --enable-tests && \
