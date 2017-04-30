@@ -43,7 +43,7 @@ test-suite             test
   main-is:            test.hs
   hs-source-dirs:     test
 
-  build-depends:       base                          >= 4.8         && < 5.0
+  build-depends:       base
                      , hspec                         >= 2.3         && < 2.5
                      , nested-resource
                      , QuickCheck                    == 2.9
