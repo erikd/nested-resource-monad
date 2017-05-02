@@ -6,6 +6,7 @@ module Control.Monad.NestedResource
   , nestedLift
   ) where
 
+import           Control.Arrow (first)
 import           Control.Applicative (Alternative (..))
 import           Control.Concurrent.Async (waitCatch, withAsync)
 import           Control.Exception (SomeException, throwIO)
@@ -27,7 +28,7 @@ runNestedResource m = do
   pure a
 
 nestIO :: IO a -> (a -> IO ()) -> NestedResource a
-nestIO acquire release = do
+nestIO acquire release =
   either cleanupAndThrow success =<< tryIO acquire
   where
     success value =
@@ -70,7 +71,7 @@ tryIO :: MonadIO m => IO a -> m (Either SomeException a)
 tryIO action = liftIO $ withAsync action waitCatch
 
 runIO :: NestedState -> IO (a, NestedState) -> IO (a, NestedState)
-runIO s action = do
+runIO s action =
   either (runUndoAndThrow s) pure =<< withAsync action waitCatch
 
 -- -----------------------------------------------------------------------------
@@ -79,7 +80,7 @@ runIO s action = do
 instance Functor NestedResource where
   {-# INLINE fmap #-}
   fmap f (NestedResource m) = NestedResource $ \ s ->
-    fmap (\ (a, s') -> (f a, s')) $ runIO s (m s)
+    first f <$> runIO s (m s)
 
 instance Applicative NestedResource where
   {-# INLINE pure #-}

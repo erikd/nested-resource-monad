@@ -40,7 +40,7 @@ testStack =
 testNestedResource :: Spec
 testNestedResource =
   describe "Test base behaviour:" $ do
-    it "Works with empty action." $ do
+    it "Works with empty action." $
       runNestedResource (pure True) `shouldReturn` True
 
     it "Can handle a single resource." $ do
@@ -103,7 +103,6 @@ testNestedResource =
     it "Handles error call." $ do
       ref <- newIORef []
       runNestedResource $ do
-        nestIO_ (testAcquire ref) (testRelease ref)
         nestIO_ (testAcquire ref) (testRelease ref)
         nestIO_ (testAcquire ref) (testRelease ref)
         nestIO_ (testAcquire ref) (\x -> testRelease ref x >> error "Catch me!")
